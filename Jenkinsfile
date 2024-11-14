@@ -64,6 +64,7 @@ pipeline {
                     def jsonData = readJSON file: './deployment.json'
                     integrationUrl = jsonData['integrationURL'];
                     dataCenters = jsonData['dataCenters']
+                    echo "dataCenters ${dataCenters}"
                 }
             }
         }
@@ -76,11 +77,8 @@ pipeline {
                 beforeAgent true
             } */
             agent none
-            input {
-                message "Voulez vous déployer vers les datacenters $dataCenters ?"
-                ok 'Déployer'
-            }
             steps {
+                input message: "Voulez vous déployer vers $dataCenters", ok: 'Déployer'
                 echo "Déploiement intégration validé"
             }
         }
