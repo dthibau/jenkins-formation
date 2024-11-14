@@ -53,6 +53,12 @@ pipeline {
         }
             
         stage('Déploiement intégration') {
+            when {
+                branch 'main'
+                beforeOptions true
+                beforeInput true
+                beforeAgent true
+            }
             agent any
             input {
                 message 'Vers quel data center voulez vous déployer ?'
