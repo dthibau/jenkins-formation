@@ -27,6 +27,7 @@ pipeline {
                 }
             }
         }
+        /*
         stage('Analyse qualité et vulnérabilités') {
             parallel {
                 stage('Vulnérabilités') {
@@ -50,15 +51,15 @@ pipeline {
                 }
             }
             
-        }
+        }*/
             
         stage('Déploiement intégration') {
-            when {
+/*            when {
                 branch 'main'
                 beforeOptions true
                 beforeInput true
                 beforeAgent true
-            }
+            } */
             agent any
             input {
                 message 'Vers quel data center voulez vous déployer ?'
@@ -70,7 +71,13 @@ pipeline {
             steps {
                 echo "Déploiement intégration vers $DATACENTER"
                 unstash 'app'
-                sh "cp *.jar /home/dthibau/Formations/Jenkins/MyWork/Serveurs/${DATACENTER}.jar"
+                script {
+                    def jsonData = readJSON file: './deployment.json'
+                    def integrationUrl = jsonData['integrationURL'];
+                    for ( dataCenter in jsonData['dataCenters'] ) {
+                        sh "cp *.jar $integrationUrl/${dataCenter}.jar"
+                    }
+                }
             }
         }
 
