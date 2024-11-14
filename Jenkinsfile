@@ -62,14 +62,11 @@ pipeline {
             } */
             agent any
             input {
-                message 'Vers quel data center voulez vous déployer ?'
+                message 'Voulez vous déployer vers les datacenters ?'
                 ok 'Déployer'
-                parameters {
-                    choice choices: ['PARIS', 'NANCY', 'STRASBOURG'], name: 'DATACENTER'
-                }
             }
             steps {
-                echo "Déploiement intégration vers $DATACENTER"
+                echo "Déploiement intégration vers les data centers"
                 unstash 'app'
                 script {
                     def jsonData = readJSON file: './deployment.json'
