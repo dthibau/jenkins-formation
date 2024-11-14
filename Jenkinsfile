@@ -1,5 +1,5 @@
 pipeline {
-   agent any 
+   agent none 
     tools {
         jdk 'JDK17'
         maven 'MAVEN3'
@@ -8,6 +8,7 @@ pipeline {
 
     stages {
         stage('Compile et tests') {
+            agent any
             steps {
                 echo 'Unit test et packaging'
                 sh 'mvn -Dmaven.test.failure.ignore=true clean package'
