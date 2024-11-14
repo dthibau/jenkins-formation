@@ -57,7 +57,7 @@ pipeline {
         }*/
 
         stage('Read conf') {
-            agent none
+            agent any
             steps {
                 echo "Lecture des dataCenters"
                 script {
