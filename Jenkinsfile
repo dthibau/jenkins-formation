@@ -11,6 +11,9 @@ pipeline {
             steps {
                 echo 'Unit test et packaging'
                 sh 'mvn -Dmaven.test.failure.ignore=true clean package'
+                dir('application/target') {
+                    stash includes: '*.jar', name: 'app'
+                }
             }
             post {
                 always {
@@ -49,10 +52,18 @@ pipeline {
         }
             
         stage('Déploiement intégration') {
-
+            agent any
+            input {
+                message 'Vers quel data center voulez vous déployer ?'
+                ok 'Déployer'
+                parameters {
+                    choice choices: ['PARIS', 'NANCY', 'STRASBOURG'], name: 'DATACENTER'
+                }
+            }
             steps {
-                echo "Déploiement intégration"
-                
+                echo "Déploiement intégration vers $DATACENTER"
+                unstash 'app'
+                sh "cp *.jar /home/dthibau/Formations/Jenkins/MyWork/Serveurs/${DATACENTER}.jar"
             }
         }
 
