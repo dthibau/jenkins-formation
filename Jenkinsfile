@@ -1,3 +1,6 @@
+def dataCenters
+def integrationUrl
+
 pipeline {
    agent none 
     tools {
@@ -52,7 +55,36 @@ pipeline {
             }
             
         }*/
-            
+
+        stage('Read conf') {
+            agent none
+            steps {
+                echo "Lecture des dataCenters"
+                script {
+                    def jsonData = readJSON file: './deployment.json'
+                    integrationUrl = jsonData['integrationURL'];
+                    dataCenters = jsonData['dataCenters']
+                }
+            }
+        }
+
+        stage('Validation déploiement') {
+/*            when {
+                branch 'main'
+                beforeOptions true
+                beforeInput true
+                beforeAgent true
+            } */
+            agent none
+            input {
+                message "Voulez vous déployer vers les datacenters $dataCenters ?"
+                ok 'Déployer'
+            }
+            steps {
+                echo "Déploiement intégration validé"
+            }
+        }
+
         stage('Déploiement intégration') {
 /*            when {
                 branch 'main'
@@ -61,17 +93,11 @@ pipeline {
                 beforeAgent true
             } */
             agent any
-            input {
-                message 'Voulez vous déployer vers les datacenters ?'
-                ok 'Déployer'
-            }
             steps {
                 echo "Déploiement intégration vers les data centers"
                 unstash 'app'
                 script {
-                    def jsonData = readJSON file: './deployment.json'
-                    def integrationUrl = jsonData['integrationURL'];
-                    for ( dataCenter in jsonData['dataCenters'] ) {
+                    for ( dataCenter in dataCenters ) {
                         sh "cp *.jar $integrationUrl/${dataCenter}.jar"
                     }
                 }
