@@ -15,7 +15,7 @@ public class MyService {
 
     public String message() {
     	System.out.println("About to return : " + this.serviceProperties.getMessage());
-        System.out.println("A Bad thing : " + new BigDecimal(0.1));
+        System.out.println("A Bad thing : " + new java.math.BigDecimal(0.1));
         return this.serviceProperties.getMessage();
     }
     
